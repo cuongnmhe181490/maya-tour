@@ -1,29 +1,41 @@
-import { Suspense, useEffect, useMemo, useState } from 'react'
+import { Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
-import * as THREE from 'three'
 import dustOverlay from '../assets/textures/dust-overlay.svg'
 
-function kiemTraDoHoa() {
-  if (typeof window === 'undefined') return false
+function tinhCauHinhDoHoa() {
+  if (typeof window === 'undefined') {
+    return { coTheDung3D: false, dpr: 1 }
+  }
 
   const giamChuyenDong = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
-  if (giamChuyenDong) return false
+  const luuDuLieu = navigator.connection?.saveData === true
 
-  if (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4) return false
-  if ('deviceMemory' in navigator && navigator.deviceMemory <= 4) return false
+  if (giamChuyenDong || luuDuLieu) {
+    return { coTheDung3D: false, dpr: 1 }
+  }
 
+  const soNhan = navigator.hardwareConcurrency ?? 6
+  const boNho = navigator.deviceMemory ?? 8
   const khung = document.createElement('canvas')
   const webgl =
+    khung.getContext('webgl2') ||
     khung.getContext('webgl') ||
-    khung.getContext('experimental-webgl') ||
-    khung.getContext('webgl2')
+    khung.getContext('experimental-webgl')
 
-  return Boolean(webgl)
+  if (!webgl || soNhan <= 4 || boNho <= 4) {
+    return { coTheDung3D: false, dpr: 1 }
+  }
+
+  const dprThietBi = window.devicePixelRatio || 1
+  const dpr = boNho <= 6 ? Math.min(dprThietBi, 1.15) : Math.min(dprThietBi, 1.3)
+
+  return { coTheDung3D: true, dpr }
 }
 
-function HatBui() {
+function HatBui({ dangHoatDong }) {
+  const thamChieu = useRef(null)
   const duLieu = useMemo(() => {
-    const soHat = 120
+    const soHat = 72
     const viTri = new Float32Array(soHat * 3)
     let hatGiong = 37
 
@@ -33,32 +45,21 @@ function HatBui() {
     }
 
     for (let i = 0; i < soHat; i += 1) {
-      viTri[i * 3] = (giaNgauNhien() - 0.5) * 30
-      viTri[i * 3 + 1] = giaNgauNhien() * 7 + 0.2
-      viTri[i * 3 + 2] = (giaNgauNhien() - 0.5) * 24
+      viTri[i * 3] = (giaNgauNhien() - 0.5) * 28
+      viTri[i * 3 + 1] = giaNgauNhien() * 6 + 0.3
+      viTri[i * 3 + 2] = (giaNgauNhien() - 0.5) * 22
     }
 
     return viTri
   }, [])
 
-  const diem = useMemo(() => new THREE.PointsMaterial({
-    color: '#e5d1a4',
-    size: 0.07,
-    transparent: true,
-    opacity: 0.22,
-    depthWrite: false,
-  }), [])
-
-  useEffect(() => () => diem.dispose(), [diem])
-
   useFrame((trangThai) => {
-    const tam = trangThai.scene.getObjectByName('hat-bui')
-    if (!tam) return
-    tam.rotation.y = trangThai.clock.elapsedTime * 0.01
+    if (!dangHoatDong || !thamChieu.current) return
+    thamChieu.current.rotation.y = trangThai.clock.elapsedTime * 0.008
   })
 
   return (
-    <points name="hat-bui" material={diem}>
+    <points ref={thamChieu}>
       <bufferGeometry>
         <bufferAttribute
           attach="attributes-position"
@@ -67,6 +68,13 @@ function HatBui() {
           itemSize={3}
         />
       </bufferGeometry>
+      <pointsMaterial
+        color="#e5d1a4"
+        size={0.06}
+        transparent
+        opacity={0.2}
+        depthWrite={false}
+      />
     </points>
   )
 }
@@ -119,7 +127,7 @@ function MatDat() {
   return (
     <group>
       <mesh receiveShadow rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.02, 0]}>
-        <planeGeometry args={[52, 52]} />
+        <planeGeometry args={[40, 40]} />
         <meshStandardMaterial color="#4a3f34" roughness={1} />
       </mesh>
       <mesh
@@ -127,57 +135,59 @@ function MatDat() {
         position={[0, 0.01, 0]}
         receiveShadow
       >
-        <ringGeometry args={[6.5, 18, 80]} />
+        <ringGeometry args={[6.5, 18, 48]} />
         <meshStandardMaterial
           color="#756246"
           roughness={1}
           transparent
-          opacity={0.26}
+          opacity={0.24}
         />
       </mesh>
     </group>
   )
 }
 
-function ChuyenDongMayQuay() {
+function ChuyenDongMayQuay({ dangHoatDong }) {
   useFrame((trangThai) => {
+    if (!dangHoatDong) return
+
     const t = trangThai.clock.elapsedTime * 0.08
     const camera = trangThai.camera
 
-    camera.position.x = Math.sin(t) * 1.2 + 5.8
-    camera.position.z = Math.cos(t * 0.7) * 1.1 + 8.2
-    camera.position.y = 3.4 + Math.sin(t * 0.4) * 0.12
+    camera.position.x = Math.sin(t) * 1.1 + 5.7
+    camera.position.z = Math.cos(t * 0.7) * 1 + 8
+    camera.position.y = 3.35 + Math.sin(t * 0.4) * 0.1
     camera.lookAt(0, 1.6, 0)
   })
 
   return null
 }
 
-function Canh() {
+function Canh({ dangHoatDong }) {
   return (
     <>
       <color attach="background" args={['#100d0b']} />
-      <fog attach="fog" args={['#100d0b', 7, 28]} />
-      <ambientLight intensity={0.28} color="#d7c29b" />
+      <fog attach="fog" args={['#100d0b', 7, 24]} />
+      <ambientLight intensity={0.26} color="#d7c29b" />
       <directionalLight
         castShadow
         color="#f3d388"
-        intensity={2.4}
+        intensity={2.2}
         position={[10, 8, 4]}
-        shadow-mapSize-width={1024}
-        shadow-mapSize-height={1024}
+        shadow-mapSize-width={512}
+        shadow-mapSize-height={512}
         shadow-camera-near={0.5}
-        shadow-camera-far={40}
-        shadow-camera-left={-10}
-        shadow-camera-right={10}
-        shadow-camera-top={10}
-        shadow-camera-bottom={-10}
+        shadow-camera-far={32}
+        shadow-camera-left={-9}
+        shadow-camera-right={9}
+        shadow-camera-top={9}
+        shadow-camera-bottom={-9}
       />
-      <directionalLight color="#4d695f" intensity={0.35} position={[-6, 3, -8]} />
+      <directionalLight color="#4d695f" intensity={0.3} position={[-6, 3, -8]} />
       <MatDat />
       <ThapElCastillo />
-      <HatBui />
-      <ChuyenDongMayQuay />
+      <HatBui dangHoatDong={dangHoatDong} />
+      <ChuyenDongMayQuay dangHoatDong={dangHoatDong} />
     </>
   )
 }
@@ -200,23 +210,63 @@ function KhungTinh({ className = '' }) {
 }
 
 export function ImmersiveCanvas({ className = '' }) {
-  const [coTheDung3D] = useState(() => kiemTraDoHoa())
+  const [cauHinhDoHoa] = useState(() => tinhCauHinhDoHoa())
+  const [dangTrongTamNhin, setDangTrongTamNhin] = useState(false)
+  const [tabDangMo, setTabDangMo] = useState(
+    () => typeof document === 'undefined' || document.visibilityState === 'visible',
+  )
+  const khungRef = useRef(null)
 
-  if (!coTheDung3D) {
+  useEffect(() => {
+    if (!khungRef.current || !cauHinhDoHoa.coTheDung3D) return undefined
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setDangTrongTamNhin(entry.isIntersecting)
+      },
+      { threshold: 0.35 },
+    )
+
+    observer.observe(khungRef.current)
+
+    return () => observer.disconnect()
+  }, [cauHinhDoHoa.coTheDung3D])
+
+  useEffect(() => {
+    const capNhatTrangThai = () => {
+      setTabDangMo(document.visibilityState === 'visible')
+    }
+
+    document.addEventListener('visibilitychange', capNhatTrangThai)
+
+    return () => {
+      document.removeEventListener('visibilitychange', capNhatTrangThai)
+    }
+  }, [])
+
+  if (!cauHinhDoHoa.coTheDung3D) {
     return <KhungTinh className={className} />
   }
 
+  const dangHoatDong = dangTrongTamNhin && tabDangMo
+
   return (
-    <div className={`relative overflow-hidden ${className}`}>
+    <div ref={khungRef} className={`relative overflow-hidden ${className}`}>
       <KhungTinh className="absolute inset-0 opacity-30" />
       <Suspense fallback={<KhungTinh className="absolute inset-0" />}>
         <Canvas
-          shadows
-          dpr={[1, 1.5]}
-          camera={{ position: [5.8, 3.4, 8.2], fov: 34 }}
-          gl={{ antialias: true, powerPreference: 'high-performance' }}
+          frameloop={dangHoatDong ? 'always' : 'demand'}
+          shadows="basic"
+          dpr={cauHinhDoHoa.dpr}
+          camera={{ position: [5.7, 3.35, 8], fov: 34 }}
+          gl={{
+            antialias: cauHinhDoHoa.dpr > 1.1,
+            powerPreference: 'high-performance',
+            alpha: false,
+          }}
+          performance={{ min: 0.75 }}
         >
-          <Canh />
+          <Canh dangHoatDong={dangHoatDong} />
         </Canvas>
       </Suspense>
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_30%,rgba(243,231,208,0.12),transparent_16%),linear-gradient(180deg,rgba(18,15,13,0),rgba(18,15,13,0.44)_70%,rgba(18,15,13,0.78))]" />
