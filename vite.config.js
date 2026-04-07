@@ -11,35 +11,32 @@ export default defineConfig({
     },
   },
   build: {
-    modulePreload: false,
-    rollupOptions: {
+    modulePreload: {
+      resolveDependencies(filename, dependencies) {
+        const laTaiNguyenBaChieu = (duongDan) =>
+          duongDan.includes('ImmersiveCanvas') || duongDan.includes('ba-chieu')
+
+        if (filename === 'index.html' || filename.includes('/index-') || filename.includes('\\index-')) {
+          return dependencies.filter((duongDan) => !laTaiNguyenBaChieu(duongDan))
+        }
+
+        return dependencies
+      },
+    },
+    rolldownOptions: {
       output: {
         codeSplitting: {
           groups: [
             {
-              name: 'ba-chieu-tai-nguyen',
-              test: /three\/examples\/jsm\/(loaders|libs)\//,
+              name: 'loi-giao-dien',
+              test: /node_modules[\\/](react|react-dom|scheduler)[\\/]/,
+              priority: 3,
             },
             {
-              name: 'ba-chieu-webgl',
-              test: /node_modules\/three\/src\/renderers\/webgl\//,
-            },
-            {
-              name: 'ba-chieu-trinh-dien',
-              test: /node_modules\/three\/src\/renderers\//,
-            },
-            {
-              name: 'ba-chieu-cau-truc',
-              test:
-                /node_modules\/three\/src\/(cameras|core|extras|geometries|helpers|lights|materials|math|objects|scenes|textures)\//,
-            },
-            {
-              name: 'ba-chieu-loi',
-              test: /node_modules\/three\//,
-            },
-            {
-              name: 'ba-chieu-khung',
-              test: /@react-three\/fiber/,
+              name: 'ba-chieu',
+              test: /node_modules[\\/](three|@react-three[\\/]fiber|react-reconciler|react-use-measure|zustand|suspend-react)[\\/]/,
+              priority: 2,
+              entriesAware: true,
             },
           ],
         },

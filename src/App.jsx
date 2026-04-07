@@ -8,6 +8,16 @@ import heroMural from './assets/textures/hero-mural.svg'
 import parchmentGrain from './assets/textures/parchment-grain.svg'
 import stoneRelief from './assets/textures/stone-relief.svg'
 
+const boNapCanhNhapVai = import.meta.glob('./components/ImmersiveCanvas.jsx')
+
+function taoCanhNhapVaiTre() {
+  return lazy(() =>
+    boNapCanhNhapVai['./components/ImmersiveCanvas.jsx']().then((module) => ({
+      default: module.ImmersiveCanvas,
+    })),
+  )
+}
+
 const congTrinh = [
   {
     id: 'el-castillo',
@@ -183,40 +193,31 @@ function KhungNhapVaiDuPhong() {
 function App() {
   const [congTrinhDangXem, setCongTrinhDangXem] = useState(congTrinh[0])
   const [anhDangXem, setAnhDangXem] = useState(null)
-  const [nenTaiCanh3D, setNenTaiCanh3D] = useState(false)
+  const [CanhNhapVai, setCanhNhapVai] = useState(null)
   const { scrollYProgress } = useScroll()
   const doLechNen = useTransform(scrollYProgress, [0, 1], ['0%', '12%'])
   const nhapVaiRef = useRef(null)
-  const CanhNhapVai = useMemo(() => {
-    if (!nenTaiCanh3D) return null
-
-    return lazy(() =>
-      import('./components/ImmersiveCanvas').then((module) => ({
-        default: module.ImmersiveCanvas,
-      })),
-    )
-  }, [nenTaiCanh3D])
   const duLieuChon = useMemo(
     () => congTrinh.find((muc) => muc.id === congTrinhDangXem.id) ?? congTrinh[0],
     [congTrinhDangXem],
   )
 
   useEffect(() => {
-    if (!nhapVaiRef.current || nenTaiCanh3D) return undefined
+    if (!nhapVaiRef.current || CanhNhapVai) return undefined
 
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (!entry.isIntersecting) return
-        setNenTaiCanh3D(true)
+        setCanhNhapVai(() => taoCanhNhapVaiTre())
         observer.disconnect()
       },
-      { rootMargin: '240px 0px' },
+      { rootMargin: '320px 0px' },
     )
 
     observer.observe(nhapVaiRef.current)
 
     return () => observer.disconnect()
-  }, [nenTaiCanh3D])
+  }, [CanhNhapVai])
 
   return (
     <div className="min-h-screen bg-obsidian text-parchment">
@@ -589,10 +590,10 @@ function App() {
                   ref={nhapVaiRef}
                   className="relative aspect-[16/10] overflow-hidden border border-parchment/12 bg-[#0f0d0b]"
                 >
-                  {CanhNhapVai ? (
-                    <Suspense fallback={<KhungNhapVaiDuPhong />}>
-                      <CanhNhapVai className="absolute inset-0" />
-                    </Suspense>
+                    {CanhNhapVai ? (
+                      <Suspense fallback={<KhungNhapVaiDuPhong />}>
+                        <CanhNhapVai className="absolute inset-0" />
+                      </Suspense>
                   ) : (
                     <KhungNhapVaiDuPhong />
                   )}
