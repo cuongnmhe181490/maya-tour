@@ -8,12 +8,6 @@ import heroMural from './assets/textures/hero-mural.svg'
 import parchmentGrain from './assets/textures/parchment-grain.svg'
 import stoneRelief from './assets/textures/stone-relief.svg'
 
-const ImmersiveCanvas = lazy(() =>
-  import('./components/ImmersiveCanvas').then((module) => ({
-    default: module.ImmersiveCanvas,
-  })),
-)
-
 const congTrinh = [
   {
     id: 'el-castillo',
@@ -193,6 +187,15 @@ function App() {
   const { scrollYProgress } = useScroll()
   const doLechNen = useTransform(scrollYProgress, [0, 1], ['0%', '12%'])
   const nhapVaiRef = useRef(null)
+  const CanhNhapVai = useMemo(() => {
+    if (!nenTaiCanh3D) return null
+
+    return lazy(() =>
+      import('./components/ImmersiveCanvas').then((module) => ({
+        default: module.ImmersiveCanvas,
+      })),
+    )
+  }, [nenTaiCanh3D])
   const duLieuChon = useMemo(
     () => congTrinh.find((muc) => muc.id === congTrinhDangXem.id) ?? congTrinh[0],
     [congTrinhDangXem],
@@ -586,9 +589,9 @@ function App() {
                   ref={nhapVaiRef}
                   className="relative aspect-[16/10] overflow-hidden border border-parchment/12 bg-[#0f0d0b]"
                 >
-                  {nenTaiCanh3D ? (
+                  {CanhNhapVai ? (
                     <Suspense fallback={<KhungNhapVaiDuPhong />}>
-                      <ImmersiveCanvas className="absolute inset-0" />
+                      <CanhNhapVai className="absolute inset-0" />
                     </Suspense>
                   ) : (
                     <KhungNhapVaiDuPhong />
