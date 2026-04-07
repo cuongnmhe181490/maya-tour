@@ -1,0 +1,22 @@
+<svg width="1200" height="800" viewBox="0 0 1200 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="blur" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="18"/>
+    </filter>
+  </defs>
+  <g filter="url(#blur)" opacity="0.7">
+    <circle cx="108" cy="150" r="6" fill="#F3E7D0"/>
+    <circle cx="265" cy="92" r="8" fill="#F3E7D0"/>
+    <circle cx="422" cy="218" r="5" fill="#D9B44A"/>
+    <circle cx="612" cy="118" r="7" fill="#F3E7D0"/>
+    <circle cx="820" cy="204" r="8" fill="#F3E7D0"/>
+    <circle cx="1014" cy="154" r="9" fill="#D9B44A"/>
+    <circle cx="1130" cy="302" r="6" fill="#F3E7D0"/>
+    <circle cx="168" cy="420" r="8" fill="#F3E7D0"/>
+    <circle cx="336" cy="518" r="7" fill="#D9B44A"/>
+    <circle cx="554" cy="430" r="10" fill="#F3E7D0"/>
+    <circle cx="720" cy="610" r="6" fill="#F3E7D0"/>
+    <circle cx="930" cy="520" r="8" fill="#D9B44A"/>
+    <circle cx="1092" cy="640" r="10" fill="#F3E7D0"/>
+  </g>
+</svg>

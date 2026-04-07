@@ -1,0 +1,25 @@
+<svg width="1600" height="1200" viewBox="0 0 1600 1200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="n" x="-20%" y="-20%" width="140%" height="140%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/>
+      <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.2 0"/>
+    </filter>
+    <linearGradient id="g" x1="124" y1="83" x2="1400" y2="1074" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#362C24"/>
+      <stop offset="0.5" stop-color="#6E5A45"/>
+      <stop offset="1" stop-color="#1A1613"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="1200" fill="url(#g)"/>
+  <g opacity="0.3">
+    <path d="M152 224L413 96L678 208L430 352L152 224Z" stroke="#D9B44A" stroke-width="2"/>
+    <path d="M560 430L845 282L1124 404L830 562L560 430Z" stroke="#D9B44A" stroke-width="2"/>
+    <path d="M224 745L493 592L758 732L480 888L224 745Z" stroke="#C9A56A" stroke-width="2"/>
+    <path d="M893 798L1139 672L1381 789L1146 936L893 798Z" stroke="#C9A56A" stroke-width="2"/>
+  </g>
+  <g opacity="0.18">
+    <path d="M0 1019C223 918 439 889 645 930C874 975 1073 1082 1600 919V1200H0V1019Z" fill="#14110F"/>
+    <path d="M0 980C250 868 530 844 750 914C1005 996 1305 1112 1600 1028" stroke="#F3E7D0" stroke-opacity="0.24"/>
+  </g>
+  <rect width="1600" height="1200" filter="url(#n)" opacity="0.36"/>
+</svg>

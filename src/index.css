@@ -1,0 +1,79 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-obsidian: #14110f;
+  --color-stone-sand: #c9a56a;
+  --color-weathered-stone: #8e7b61;
+  --color-jade: #2f6f62;
+  --color-gold-sun: #d9b44a;
+  --color-parchment: #f3e7d0;
+  --font-display: 'Noto Serif Display', serif;
+  --font-body: 'Be Vietnam Pro', sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  background:
+    radial-gradient(circle at top, rgba(217, 180, 74, 0.09), transparent 24%),
+    radial-gradient(circle at 20% 10%, rgba(243, 231, 208, 0.04), transparent 18%),
+    linear-gradient(180deg, #171310 0%, #14110f 100%);
+  color: #f3e7d0;
+  font-family: 'Be Vietnam Pro', sans-serif;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.04), transparent 16%),
+    radial-gradient(circle at 80% 0%, rgba(217, 180, 74, 0.05), transparent 22%),
+    url("data:image/svg+xml,%3Csvg width='220' height='220' viewBox='0 0 220 220' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cg opacity='0.18'%3E%3Cpath d='M0 110H220M110 0V220M30 30L190 190M190 30L30 190' stroke='%23C9A56A' stroke-width='0.6' stroke-dasharray='2 10'/%3E%3C/g%3E%3C/svg%3E");
+  mix-blend-mode: soft-light;
+  opacity: 0.22;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 18% 22%, rgba(255, 245, 216, 0.06), transparent 10%),
+    radial-gradient(circle at 72% 18%, rgba(255, 245, 216, 0.05), transparent 12%),
+    radial-gradient(circle at 84% 72%, rgba(217, 180, 74, 0.05), transparent 10%);
+  opacity: 0.45;
+  mix-blend-mode: screen;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button {
+  font: inherit;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+::selection {
+  background: rgba(217, 180, 74, 0.32);
+  color: #fdf7eb;
+}
