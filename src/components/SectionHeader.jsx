@@ -1,13 +1,13 @@
 export function SectionHeader({ nhan, tieuDe, moTa }) {
   return (
     <div className="max-w-[760px]">
-      <p className="font-display text-[0.78rem] uppercase tracking-[0.44em] text-gold-sun/78">
+      <p className="font-body text-[0.78rem] font-semibold uppercase tracking-[0.24em] text-weathered-stone">
         {nhan}
       </p>
-      <h2 className="mt-4 font-display text-4xl leading-[1.02] text-parchment sm:text-5xl md:text-6xl">
+      <h2 className="mt-3 font-display text-3xl leading-tight text-obsidian sm:text-4xl lg:text-[2.8rem]">
         {tieuDe}
       </h2>
-      <p className="mt-6 max-w-[58ch] text-base leading-8 text-parchment/72 md:text-lg">
+      <p className="mt-5 max-w-[60ch] text-base leading-8 text-weathered-stone md:text-[1.05rem]">
         {moTa}
       </p>
     </div>
