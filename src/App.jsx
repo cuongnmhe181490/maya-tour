@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { Suspense, lazy, useState } from 'react'
 import { AnimatePresence, motion as Motion } from 'framer-motion'
 import { Reveal } from './components/Reveal'
 import { SectionHeader } from './components/SectionHeader'
@@ -16,6 +16,8 @@ import chacMoolDesktop from './assets/photos/chac-mool-desktop.webp'
 import chacMoolMobile from './assets/photos/chac-mool-mobile.webp'
 import panoramaSanBongDesktop from './assets/photos/panorama-san-bong-desktop.webp'
 import panoramaSanBongMobile from './assets/photos/panorama-san-bong-mobile.webp'
+
+const TrangToanCanh360 = lazy(() => import('./pages/TrangToanCanh360.jsx'))
 
 const lienKet = {
   unesco: 'https://whc.unesco.org/en/list/483',
@@ -276,7 +278,20 @@ function HinhTuLieu({
   )
 }
 
-function App() {
+function KhungTaiToanCanh() {
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-obsidian px-6 text-center text-white">
+      <div className="space-y-3">
+        <p className="text-sm font-semibold uppercase tracking-[0.14em] text-white/60">
+          Toàn cảnh 360
+        </p>
+        <p className="font-display text-3xl leading-tight">Đang mở không gian quan sát toàn cảnh…</p>
+      </div>
+    </div>
+  )
+}
+
+function TrangChu() {
   const [anhDangXem, setAnhDangXem] = useState(null)
 
   return (
@@ -567,6 +582,9 @@ function App() {
                   <NutLienKet href={lienKet.unesco} toi>
                     Mở hồ sơ di sản
                   </NutLienKet>
+                  <NutLienKet href="/toan-canh-360" toi>
+                    Xem toàn cảnh 360
+                  </NutLienKet>
                   <NutLienKet href={lienKet.danhMucAnh} toi>
                     Mở bộ ảnh tư liệu
                   </NutLienKet>
@@ -716,4 +734,17 @@ function App() {
   )
 }
 
-export default App
+export default function App() {
+  const laTrangToanCanh =
+    typeof window !== 'undefined' && window.location.pathname === '/toan-canh-360'
+
+  if (laTrangToanCanh) {
+    return (
+      <Suspense fallback={<KhungTaiToanCanh />}>
+        <TrangToanCanh360 />
+      </Suspense>
+    )
+  }
+
+  return <TrangChu />
+}

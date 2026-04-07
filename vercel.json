@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/toan-canh-360",
+      "destination": "/index.html"
+    }
+  ]
+}
