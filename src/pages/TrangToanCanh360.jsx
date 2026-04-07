@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import 'pannellum/build/pannellum.css'
 import 'pannellum/build/pannellum.js'
+import './trang-toan-canh-360.css'
 import panoramaDesktop from '../assets/panorama/chichen-itza-360-desktop.jpg'
 import panoramaMobile from '../assets/panorama/chichen-itza-360-mobile.jpg'
 
@@ -8,6 +9,102 @@ const CAU_HINH_PANORAMA = {
   haov: 313.71,
   vaov: 57.95,
   vOffset: 0,
+}
+
+const CAC_DIEM_CHU_GIAI = [
+  {
+    pitch: -0.8,
+    yaw: -47,
+    cssClass: 'diem-chu-giai-pannellum',
+    createTooltipFunc: taoChuGiaiHotspot,
+    createTooltipArgs: {
+      tieuDe: 'Kim tự tháp El Castillo',
+      noiDung:
+        'Khối đền bậc thang giữ vai trò trung tâm trong bố cục nghi lễ và thiên văn của Chichén Itzá.',
+      nhanNut: 'Mở chú giải về El Castillo',
+    },
+  },
+  {
+    pitch: -6.2,
+    yaw: 22,
+    cssClass: 'diem-chu-giai-pannellum',
+    createTooltipFunc: taoChuGiaiHotspot,
+    createTooltipArgs: {
+      tieuDe: 'Không gian nghi lễ',
+      noiDung:
+        'Khoảng sân rộng mở cho thấy quy mô của khu nghi lễ, nơi các công trình lớn liên kết thành một trục quan sát và tụ hội.',
+      nhanNut: 'Mở chú giải về không gian nghi lễ',
+    },
+  },
+]
+
+function dongTatCaChuGiai(ngoaiTru = null) {
+  document.querySelectorAll('[data-vung-chu-giai="true"]').forEach((nut) => {
+    if (nut !== ngoaiTru) {
+      nut.setAttribute('data-mo', 'false')
+      nut.setAttribute('aria-expanded', 'false')
+    }
+  })
+}
+
+function taoChuGiaiHotspot(khungHotspot, duLieu) {
+  const nut = document.createElement('button')
+  nut.type = 'button'
+  nut.className = 'diem-chu-giai'
+  nut.setAttribute('data-vung-chu-giai', 'true')
+  nut.setAttribute('data-mo', 'false')
+  nut.setAttribute('aria-expanded', 'false')
+  nut.setAttribute('aria-label', duLieu.nhanNut)
+
+  const vong = document.createElement('span')
+  vong.className = 'diem-chu-giai__vong'
+  vong.setAttribute('aria-hidden', 'true')
+
+  const the = document.createElement('span')
+  the.className = 'diem-chu-giai__the'
+
+  const tieuDe = document.createElement('span')
+  tieuDe.className = 'diem-chu-giai__tieu-de'
+  tieuDe.textContent = duLieu.tieuDe
+
+  const noiDung = document.createElement('span')
+  noiDung.className = 'diem-chu-giai__noi-dung'
+  noiDung.textContent = duLieu.noiDung
+
+  the.append(tieuDe, noiDung)
+  nut.append(vong, the)
+  khungHotspot.append(nut)
+
+  nut.addEventListener('click', (suKien) => {
+    suKien.preventDefault()
+    suKien.stopPropagation()
+    const dangMo = nut.getAttribute('data-mo') === 'true'
+    dongTatCaChuGiai(nut)
+    nut.setAttribute('data-mo', dangMo ? 'false' : 'true')
+    nut.setAttribute('aria-expanded', dangMo ? 'false' : 'true')
+  })
+
+  nut.addEventListener('mouseenter', () => {
+    dongTatCaChuGiai(nut)
+    nut.setAttribute('data-mo', 'true')
+    nut.setAttribute('aria-expanded', 'true')
+  })
+
+  nut.addEventListener('mouseleave', () => {
+    nut.setAttribute('data-mo', 'false')
+    nut.setAttribute('aria-expanded', 'false')
+  })
+
+  nut.addEventListener('focus', () => {
+    dongTatCaChuGiai(nut)
+    nut.setAttribute('data-mo', 'true')
+    nut.setAttribute('aria-expanded', 'true')
+  })
+
+  nut.addEventListener('blur', () => {
+    nut.setAttribute('data-mo', 'false')
+    nut.setAttribute('aria-expanded', 'false')
+  })
 }
 
 function chonPanorama() {
@@ -53,11 +150,12 @@ export default function TrangToanCanh360() {
   }, [])
 
   useEffect(() => {
-    if (!khungViewerRef.current || !coSanPannellum) return undefined
+    const khungViewer = khungViewerRef.current
+    if (!khungViewer || !coSanPannellum) return undefined
 
     let daHuy = false
 
-    const viewer = window.pannellum.viewer(khungViewerRef.current, {
+    const viewer = window.pannellum.viewer(khungViewer, {
       type: 'equirectangular',
       panorama: duongDanPanorama,
       autoLoad: true,
@@ -72,6 +170,7 @@ export default function TrangToanCanh360() {
       hfov: 110,
       minHfov: 55,
       maxHfov: 120,
+      hotSpots: CAC_DIEM_CHU_GIAI,
       ...CAU_HINH_PANORAMA,
     })
 
@@ -94,6 +193,10 @@ export default function TrangToanCanh360() {
       capNhatHfov()
     }
 
+    const xuLyDongChuGiai = () => {
+      dongTatCaChuGiai()
+    }
+
     const xuLyToanManHinh = () => {
       setToanManHinh(Boolean(document.fullscreenElement))
       xuLyResize()
@@ -102,11 +205,13 @@ export default function TrangToanCanh360() {
     viewer.on('load', xuLyTaiXong)
     viewer.on('zoomchange', capNhatHfov)
     window.addEventListener('resize', xuLyResize)
+    khungViewer.addEventListener('pointerdown', xuLyDongChuGiai)
     document.addEventListener('fullscreenchange', xuLyToanManHinh)
 
     return () => {
       daHuy = true
       window.removeEventListener('resize', xuLyResize)
+      khungViewer.removeEventListener('pointerdown', xuLyDongChuGiai)
       document.removeEventListener('fullscreenchange', xuLyToanManHinh)
       viewer.destroy()
       viewerRef.current = null
