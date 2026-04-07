@@ -1,4 +1,4 @@
-import { Suspense, lazy, useMemo, useState } from 'react'
+import { Suspense, lazy, useEffect, useMemo, useRef, useState } from 'react'
 import { motion as Motion, useScroll, useTransform } from 'framer-motion'
 import { CarvedButton } from './components/CarvedButton'
 import { Reveal } from './components/Reveal'
@@ -189,12 +189,31 @@ function KhungNhapVaiDuPhong() {
 function App() {
   const [congTrinhDangXem, setCongTrinhDangXem] = useState(congTrinh[0])
   const [anhDangXem, setAnhDangXem] = useState(null)
+  const [nenTaiCanh3D, setNenTaiCanh3D] = useState(false)
   const { scrollYProgress } = useScroll()
   const doLechNen = useTransform(scrollYProgress, [0, 1], ['0%', '12%'])
+  const nhapVaiRef = useRef(null)
   const duLieuChon = useMemo(
     () => congTrinh.find((muc) => muc.id === congTrinhDangXem.id) ?? congTrinh[0],
     [congTrinhDangXem],
   )
+
+  useEffect(() => {
+    if (!nhapVaiRef.current || nenTaiCanh3D) return undefined
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return
+        setNenTaiCanh3D(true)
+        observer.disconnect()
+      },
+      { rootMargin: '240px 0px' },
+    )
+
+    observer.observe(nhapVaiRef.current)
+
+    return () => observer.disconnect()
+  }, [nenTaiCanh3D])
 
   return (
     <div className="min-h-screen bg-obsidian text-parchment">
@@ -563,10 +582,17 @@ function App() {
 
             <Reveal delay={0.15}>
               <div className="border border-parchment/10 bg-[linear-gradient(180deg,rgba(243,231,208,0.04),rgba(243,231,208,0.01))] p-4 shadow-[0_36px_100px_rgba(0,0,0,0.48)] sm:p-6">
-                <div className="relative aspect-[16/10] overflow-hidden border border-parchment/12 bg-[#0f0d0b]">
-                  <Suspense fallback={<KhungNhapVaiDuPhong />}>
-                    <ImmersiveCanvas className="absolute inset-0" />
-                  </Suspense>
+                <div
+                  ref={nhapVaiRef}
+                  className="relative aspect-[16/10] overflow-hidden border border-parchment/12 bg-[#0f0d0b]"
+                >
+                  {nenTaiCanh3D ? (
+                    <Suspense fallback={<KhungNhapVaiDuPhong />}>
+                      <ImmersiveCanvas className="absolute inset-0" />
+                    </Suspense>
+                  ) : (
+                    <KhungNhapVaiDuPhong />
+                  )}
                   <div className="absolute left-5 top-5 border border-parchment/12 bg-obsidian/72 px-4 py-2 text-xs uppercase tracking-[0.28em] text-parchment/74 backdrop-blur-sm">
                     Chế độ trưng bày
                   </div>

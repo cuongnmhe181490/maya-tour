@@ -251,7 +251,11 @@ export function ImmersiveCanvas({ className = '' }) {
   const dangHoatDong = dangTrongTamNhin && tabDangMo
 
   return (
-    <div ref={khungRef} className={`relative overflow-hidden ${className}`}>
+    <div
+      ref={khungRef}
+      className={`relative overflow-hidden ${className}`}
+      data-trang-thai-render={dangHoatDong ? 'dong' : 'tinh'}
+    >
       <KhungTinh className="absolute inset-0 opacity-30" />
       <Suspense fallback={<KhungTinh className="absolute inset-0" />}>
         <Canvas
