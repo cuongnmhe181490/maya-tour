@@ -27,7 +27,7 @@ const BO_CANH = {
     cauHinh: {
       pitch: -2,
       yaw: -28,
-      hfov: 110,
+      hfov: 116,
       minPitch: -14,
       maxPitch: 13,
       haov: 313.71,
@@ -52,7 +52,7 @@ const BO_CANH = {
     cauHinh: {
       pitch: -1.5,
       yaw: 12,
-      hfov: 108,
+      hfov: 115,
       minPitch: -13,
       maxPitch: 12,
       haov: 318,
@@ -177,7 +177,7 @@ function taoHotspotChoCanh(idCanh) {
         sceneId: 'san-bong-lon',
         targetPitch: -1.5,
         targetYaw: 12,
-        targetHfov: 108,
+        targetHfov: 115,
         cssClass: 'diem-dieu-huong-pannellum',
         createTooltipFunc: taoHotspotDieuHuong,
         createTooltipArgs: {
@@ -208,7 +208,7 @@ function taoHotspotChoCanh(idCanh) {
       sceneId: 'el-castillo',
       targetPitch: -2,
       targetYaw: -28,
-      targetHfov: 110,
+      targetHfov: 116,
       cssClass: 'diem-dieu-huong-pannellum',
       createTooltipFunc: taoHotspotDieuHuong,
       createTooltipArgs: {
@@ -274,7 +274,7 @@ export default function TrangToanCanh360() {
   const [daTaiXong, setDaTaiXong] = useState(false)
   const [loiTai] = useState(() => !coSanPannellum)
   const [toanManHinh, setToanManHinh] = useState(false)
-  const [hfovHienTai, setHfovHienTai] = useState(110)
+  const [hfovHienTai, setHfovHienTai] = useState(116)
   const [idCanhHienTai, setIdCanhHienTai] = useState('el-castillo')
   const cauHinhTour = useMemo(() => taoCauHinhTour(), [])
   const canhHienTai = BO_CANH[idCanhHienTai] ?? BO_CANH['el-castillo']
@@ -306,7 +306,7 @@ export default function TrangToanCanh360() {
         sceneFadeDuration: 600,
         backgroundColor: [0.04, 0.03, 0.03],
         minHfov: 55,
-        maxHfov: 120,
+        maxHfov: 118,
       },
       scenes: cauHinhTour,
     })
@@ -367,7 +367,7 @@ export default function TrangToanCanh360() {
   const thayDoiMucPhong = (delta) => {
     const viewer = viewerRef.current
     if (!viewer) return
-    const mucMoi = Math.max(55, Math.min(120, viewer.getHfov() + delta))
+    const mucMoi = Math.max(55, Math.min(118, viewer.getHfov() + delta))
     viewer.setHfov(mucMoi, 250)
     setHfovHienTai(mucMoi)
   }
@@ -458,7 +458,10 @@ export default function TrangToanCanh360() {
                 />
               </div>
               <p className="text-sm leading-7 text-white/56">
-                Khung nhìn hiện tại: {Math.round(hfovHienTai)}°
+                Góc nhìn hiện tại: {Math.round(hfovHienTai)}°
+              </p>
+              <p className="text-sm leading-7 text-white/46">
+                Có thể xoay quan sát toàn cảnh 360°.
               </p>
             </div>
           </div>
