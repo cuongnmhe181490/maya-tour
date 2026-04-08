@@ -2,6 +2,10 @@
   overflow: visible;
 }
 
+.diem-dieu-huong-pannellum {
+  overflow: visible;
+}
+
 .diem-chu-giai {
   position: relative;
   display: inline-flex;
@@ -101,6 +105,73 @@
   color: rgba(248, 240, 223, 0.78);
 }
 
+.diem-dieu-huong {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: #f6f0e5;
+  transform: translate3d(0, 0, 0);
+  transition: transform 220ms ease;
+}
+
+.pnlm-hotspot-base:hover .diem-dieu-huong,
+.pnlm-hotspot-base:focus-visible .diem-dieu-huong {
+  transform: translate3d(0.1rem, 0, 0);
+}
+
+.diem-dieu-huong__mui-ten {
+  position: relative;
+  display: inline-flex;
+  width: 1.9rem;
+  height: 1.9rem;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(243, 231, 208, 0.92);
+  border-radius: 999px;
+  background: rgba(6, 5, 4, 0.46);
+  box-shadow:
+    0 0 0 0.4rem rgba(7, 6, 5, 0.22),
+    0 0 18px rgba(217, 180, 74, 0.09);
+}
+
+.diem-dieu-huong__mui-ten::before {
+  content: '';
+  display: block;
+  width: 0.48rem;
+  height: 0.48rem;
+  border-top: 1.5px solid rgba(248, 240, 223, 0.96);
+  border-right: 1.5px solid rgba(248, 240, 223, 0.96);
+}
+
+.diem-dieu-huong--tien .diem-dieu-huong__mui-ten::before {
+  transform: translateY(0.06rem) rotate(-45deg);
+}
+
+.diem-dieu-huong--lui .diem-dieu-huong__mui-ten::before {
+  transform: translateY(-0.06rem) rotate(135deg);
+}
+
+.diem-dieu-huong--trai .diem-dieu-huong__mui-ten::before {
+  transform: translateX(-0.06rem) rotate(-135deg);
+}
+
+.diem-dieu-huong--phai .diem-dieu-huong__mui-ten::before {
+  transform: translateX(0.06rem) rotate(45deg);
+}
+
+.diem-dieu-huong__nhan {
+  border: 1px solid rgba(243, 231, 208, 0.14);
+  background: linear-gradient(180deg, rgba(13, 12, 10, 0.9), rgba(9, 8, 7, 0.84));
+  padding: 0.42rem 0.7rem;
+  font-size: 0.78rem;
+  line-height: 1;
+  color: rgba(248, 240, 223, 0.9);
+  box-shadow:
+    0 14px 32px rgba(0, 0, 0, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(6px);
+}
+
 @media (max-width: 768px) {
   .diem-chu-giai {
     min-width: 3.25rem;
@@ -118,5 +189,19 @@
   .diem-chu-giai:hover .diem-chu-giai__the,
   .diem-chu-giai:focus-visible .diem-chu-giai__the {
     transform: translate3d(-50%, 0.1rem, 0);
+  }
+
+  .diem-dieu-huong {
+    gap: 0.42rem;
+  }
+
+  .diem-dieu-huong__mui-ten {
+    width: 2.15rem;
+    height: 2.15rem;
+  }
+
+  .diem-dieu-huong__nhan {
+    padding: 0.48rem 0.72rem;
+    font-size: 0.76rem;
   }
 }
